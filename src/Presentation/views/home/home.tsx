@@ -8,7 +8,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
 } from "react-native";
-import { RoundedButton } from "../../components/RoundedButton";
+import { RoundedButton } from "../../../Presentation/components/RoundedButton";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../../App";
 import useViewModel from "./ViewModel";
@@ -20,11 +20,11 @@ interface Props extends StackScreenProps<RootStackParamList, "HomeScreen"> {}
 export const HomeScreen = ({ navigation, route }: Props) => {
   // Parte de Alex verificar si es prof o estudiante
 
-  // const onSubmito = () => {
-  //   return navigation.navigate('ClassesScreen', {
-  //     isTeacher: false
-  //   })
-  // }
+  const onSubmito = () => {
+    return navigation.navigate("ClassesScreen", {
+      isTeacher: true,
+    });
+  };
 
   const { email, password, onChange, errorMessage, login, user } =
     useViewModel();
@@ -36,9 +36,11 @@ export const HomeScreen = ({ navigation, route }: Props) => {
   }, [errorMessage]);
 
   useEffect(() => {
-    if (user?.id_user && user?.session_token) {
+    if (user?.id_user && user?.session_token && user.id_user !== "") {
       //TODO: Aqui colocar el nombre de la vista
-      navigation.replace("ProfileInfoScreen");
+      const isTeacher = Number(user.id_rol) === 1? false : true;
+      navigation.replace("ClassesScreen",{isTeacher: isTeacher});
+      // navigation.replace('ProfileInfoScreens');
     }
   }, [user]);
 
@@ -92,14 +94,6 @@ export const HomeScreen = ({ navigation, route }: Props) => {
           {/* MOSTRAR CON UN ALERT EL VALOR DE LOS INPUTS */}
           <RoundedButton text="Get in" onPress={() => login()} />
         </View>
-
-        {/* MOSTRAR EN LA TERMINAL EL VALOR DE LOS INPUTS */}
-        {/*         <View>
-          <RoundedButton text='Get in' onPress={() =>{
-            console.log ('Email '+ email);
-            console.log ('Password '+ password);
-          }} />
-        </View> */}
 
         {/* COMIENZA TEXTO FINAL */}
         <View style={styles.formSignUp}>
