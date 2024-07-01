@@ -17,11 +17,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../../App";
 import { MyColors } from "../../theme/AppTheme";
 import { Picker } from "@react-native-picker/picker";
-import { Teacher } from "../../../Domain/entities/Teacher";
-import { Course } from "../../../Domain/entities/Course";
 
-interface Props
-  extends StackScreenProps<RootStackParamList, "RegisterScreen"> {}
+interface Props extends StackScreenProps<RootStackParamList, "RegisterScreen"> {}
 
 export default function RegisterScreen({ navigation, route }: Props) {
   const {
@@ -29,44 +26,23 @@ export default function RegisterScreen({ navigation, route }: Props) {
     email,
     numero,
     password,
-    confirmPassword,
     onChange,
     register,
     errorMessage,
     loadingElement,
     pickImage,
     takePhoto,
-    user,
     roles,
-    teachers,
-    courses,
-    setCourses,
     image,
-    id_rol,
-    setActualTeacher,
-    actualTeacher,
   } = useViewModel();
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para almacenar el rol seleccionado
 
   useEffect(() => {
     if (errorMessage) {
       ToastAndroid.show(errorMessage, ToastAndroid.LONG);
     }
   }, [errorMessage]);
-
-  useEffect(() => {
-    console.log(JSON.stringify(user));
-    if (user?.id_user && user?.session_token) {
-      const isTeacher = Number(user.id_rol) === 1 ? false : true;
-      navigation.replace("HomeScreen");
-    }
-  }, [user]);
-
-  const handleTeacherChange = (teacherCourses: Course[]) => {
-    console.log("Selected Teacher Courses:", teacherCourses);
-    setCourses(teacherCourses);
-    onChange("id_teacher", teacherCourses[0].id_teacher);
-  };
 
   return (
     <View style={styles.container}>
@@ -75,7 +51,6 @@ export default function RegisterScreen({ navigation, route }: Props) {
         style={styles.imageBackground}
       />
 
-      {/* LOGO SUPERIOR CENTRAL */}
       <View style={styles.logoContainer}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           {image === "" ? (
@@ -90,12 +65,10 @@ export default function RegisterScreen({ navigation, route }: Props) {
         <Text style={styles.logoText}>Select a picture</Text>
       </View>
 
-      {/* COMIENZA FORMULARIO */}
       <View style={styles.form}>
         <ScrollView>
           <Text style={styles.formText}>Sign Up!</Text>
 
-          {/* Select Rol */}
           <View style={styles.formSelect}>
             <Image
               style={styles.formIcon}
@@ -103,8 +76,10 @@ export default function RegisterScreen({ navigation, route }: Props) {
             />
             <Picker
               style={styles.formPicker}
-              selectedValue={id_rol}
-              onValueChange={(itemValue) => onChange("id_rol", itemValue)}
+              selectedValue={selectedRole} // Usar el estado para el valor seleccionado
+              onValueChange={(itemValue) =>
+                setSelectedRole(itemValue) // Actualizar el estado con el nuevo valor seleccionado
+              }
             >
               <Picker.Item
                 label="Select a Role"
@@ -114,83 +89,14 @@ export default function RegisterScreen({ navigation, route }: Props) {
               />
               {roles.map((role) => (
                 <Picker.Item
-                  key={role.id_rol}
+                  key={role._id}
                   label={role.name_rol}
-                  value={role.id_rol}
+                  value={role._id}
                 />
               ))}
             </Picker>
           </View>
 
-          {/* Mostrar los selectores adicionales si el rol es profesor */}
-          {Number(id_rol) === 1 && (
-            <>
-              {/* Selector de Profesor */}
-              <Text style={styles.formTextTitleInput}>Select a Teacher</Text>
-              <View style={styles.formSelect}>
-                <Image
-                  style={styles.formIcon}
-                  source={require("../../../../assets/user.png")}
-                />
-                <Picker
-                  style={styles.formPicker}
-                  onValueChange={(itemValue) => {
-                    const selectedTeacher = teachers.find(
-                      (teacher) => teacher.id_teacher === itemValue
-                    );
-                    handleTeacherChange(
-                      selectedTeacher ? selectedTeacher.courses : []
-                    );
-                  }}
-                >
-                  <Picker.Item
-                    label="Select a Teacher"
-                    value={null}
-                    enabled={false}
-                    style={styles.titlePickerItem}
-                  />
-                  {teachers.map((teacher: Teacher) => (
-                    <Picker.Item
-                      key={Number(teacher.id_teacher)}
-                      label={teacher.full_name}
-                      value={teacher.id_teacher}
-                    />
-                  ))}
-                </Picker>
-              </View>
-
-              {/* Selector de Curso */}
-              <Text style={styles.formTextTitleInput}>Select a Course</Text>
-              <View style={styles.formSelect}>
-                <Image
-                  style={styles.formIcon}
-                  source={require("../../../../assets/user.png")}
-                />
-                <Picker
-                  style={styles.formPicker}
-                  onValueChange={(itemValue) =>
-                    onChange("id_courses", itemValue)
-                  }
-                >
-                  <Picker.Item
-                    label="Select a Course"
-                    value={null}
-                    enabled={false}
-                    style={styles.titlePickerItem}
-                  />
-                  {courses.map((course: Course) => (
-                    <Picker.Item
-                      key={course.id_course}
-                      label={course.id_name_course}
-                      value={course.id_course}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </>
-          )}
-
-          {/* COMIENZA SEGUNDO INPUT */}
           <Text style={styles.formTextTitleInput}>Full name</Text>
           <CustomTextInput
             image={require("../../../../assets/my_user.png")}
@@ -201,7 +107,6 @@ export default function RegisterScreen({ navigation, route }: Props) {
             onChangeText={onChange}
           />
 
-          {/* COMIENZA TERCER INPUT */}
           <Text style={styles.formTextTitleInput}>Email</Text>
           <CustomTextInput
             image={require("../../../../assets/email.png")}
@@ -212,7 +117,6 @@ export default function RegisterScreen({ navigation, route }: Props) {
             onChangeText={onChange}
           />
 
-          {/* COMIENZA CUARTO INPUT */}
           <Text style={styles.formTextTitleInput}>Your phone number</Text>
           <CustomTextInput
             image={require("../../../../assets/phone.png")}
@@ -223,7 +127,6 @@ export default function RegisterScreen({ navigation, route }: Props) {
             onChangeText={onChange}
           />
 
-          {/* COMIENZA QUINTO INPUT */}
           <Text style={styles.formTextTitleInput}>Password</Text>
           <CustomTextInput
             image={require("../../../../assets/password.png")}
@@ -235,19 +138,6 @@ export default function RegisterScreen({ navigation, route }: Props) {
             onChangeText={onChange}
           />
 
-          {/* COMIENZA SEXTO INPUT */}
-          <Text style={styles.formTextTitleInput}>Confirm password</Text>
-          <CustomTextInput
-            image={require("../../../../assets/confirm_password.png")}
-            placeholder="Confirm password"
-            keyboardType="default"
-            secureTextEntry={true}
-            value={confirmPassword}
-            property="confirmPassword"
-            onChangeText={onChange}
-          />
-
-          {/* COMIENZA BOTON */}
           <View>
             <RoundedButton text="Sign up" onPress={() => register()} />
           </View>
@@ -257,15 +147,15 @@ export default function RegisterScreen({ navigation, route }: Props) {
       <ModalPickImage
         openGallery={pickImage}
         openCamera={takePhoto}
-        setModalUseState={setModalVisible}
         modalUseState={modalVisible}
+        setModalUseState={setModalVisible}
       />
 
       {loadingElement && (
         <ActivityIndicator
           style={styles.loading}
           size="large"
-          color={MyColors.primaryClasses}
+          color={MyColors.primary}
         />
       )}
     </View>
