@@ -6,4 +6,4 @@ export interface ResponseApi
     error?:  any,
 }
 
-//si quisiera que fuera opcional el tipo seria any
+//si quisiera que fuera opcional el tipo seria any puede o  no venir el error
