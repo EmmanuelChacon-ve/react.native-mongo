@@ -6,8 +6,6 @@ import { ResponseApi } from "../sources/remote/api/models/responseApi";
 import { ImagePickerAsset } from "expo-image-picker";
 import mime from "mime";
 
-
-
 export class AuthRepositoryImplement implements AuthRepository
 {  
     async registerWithImage(user: User, file: ImagePickerAsset): Promise<any> {

@@ -1,22 +1,21 @@
 import axios from "axios";
 
-const ApiIngles = axios.create(
-    {
-        baseURL: 'http://192.168.2.14:3000/v1',
-        headers: 
-        {
-            "Content-Type": 'application/json'
-        }
-    })
+// Usa la IP local de tu máquina
+const IP_LOCAL = 'http://192.168.5.107:3000';
 
-const ApiInglesForImage = axios.create(
-    {
-        baseURL: 'http://192.168.2.14:3000/v1',
-        headers: 
-        {
-            "Content-Type": 'multipart/form-data',
-            "accept": 'application/json',
-        }
-    })
+const ApiIngles = axios.create({
+    baseURL: `${IP_LOCAL}/v1`,
+    headers: {
+        "Content-Type": 'application/json'
+    }
+});
+
+const ApiInglesForImage = axios.create({
+    baseURL: `${IP_LOCAL}/v1`,
+    headers: {
+        "Content-Type": 'multipart/form-data',
+        "accept": 'application/json',
+    }
+});
 
 export { ApiIngles, ApiInglesForImage };
