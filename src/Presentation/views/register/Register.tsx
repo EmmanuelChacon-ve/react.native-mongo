@@ -34,6 +34,7 @@ export default function RegisterScreen({ navigation, route }: Props) {
     takePhoto,
     roles,
     image,
+    handleRoleChange,  // Import handleRoleChange from the ViewModel
   } = useViewModel();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para almacenar el rol seleccionado
@@ -68,18 +69,18 @@ export default function RegisterScreen({ navigation, route }: Props) {
       <View style={styles.form}>
         <ScrollView>
           <Text style={styles.formText}>Sign Up!</Text>
-
           <View style={styles.formSelect}>
-            <Image
+          <Image
               style={styles.formIcon}
               source={require("../../../../assets/user.png")}
             />
             <Picker
               style={styles.formPicker}
               selectedValue={selectedRole} // Usar el estado para el valor seleccionado
-              onValueChange={(itemValue) =>
-                setSelectedRole(itemValue) // Actualizar el estado con el nuevo valor seleccionado
-              }
+              onValueChange={(itemValue) => {
+                setSelectedRole(itemValue); // Actualizar el estado con el nuevo valor seleccionado
+                handleRoleChange(itemValue); // Llamar a la función handleRoleChange del ViewModel
+              }}
             >
               <Picker.Item
                 label="Select a Role"
