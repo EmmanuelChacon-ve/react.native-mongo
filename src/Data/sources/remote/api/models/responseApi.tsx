@@ -4,6 +4,7 @@ export interface ResponseApi
     success: boolean;
     data?:    any,
     error?:  any,
+    dataToReturn?: any
 }
 
 //si quisiera que fuera opcional el tipo seria any puede o  no venir el error

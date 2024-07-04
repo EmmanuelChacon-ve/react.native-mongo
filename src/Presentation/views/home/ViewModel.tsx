@@ -23,12 +23,13 @@ const HomeViewModel = () => {
   const login = async () => {
     if (isValidForm()) {
       const response = await loginAuthCase(values.email, values.password);
+     
       if (!response.success) {
         ToastAndroid.show(response.message, ToastAndroid.LONG);
       } else {
         /*   await saveUserLocalUseCase(response.data);
         getUserSession(); */
-        saveUserSession(response.data);
+        saveUserSession(response.data.dataToReturn);
       }
     }
   };

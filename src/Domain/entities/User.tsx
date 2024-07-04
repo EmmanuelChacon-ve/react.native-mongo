@@ -1,18 +1,14 @@
 import { Role } from "./Role";
+
 export interface User {
-  id_user?: string;
+  _id: string; // Cambiado de id_user a _id para que coincida con el JSON recibido
   full_name: string;
   email: string;
   numero: string;
   password: string;
-  image?: string;
-  session_token?: string;
-  roles: {
-    id_rol?: string;
-    name_rol: string;
-    status: string;
-  }[];
+  image: string;
   status: string;
+  roles: any[];
 }
 
 
