@@ -7,12 +7,8 @@ export interface User {
   password: string;
   image?: string;
   session_token?: string;
-  roles: {
-    id_rol?: string;
-    name_rol: string;
-    status: string;
-  }[];
-  status: string;
+  roles: any[];
+  status?: string;
 }
 
 
