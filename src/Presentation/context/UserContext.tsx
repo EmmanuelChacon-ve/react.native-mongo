@@ -5,20 +5,21 @@ import { saveUserLocalUseCase } from "../../Domain/useCase/userLocal/saveUserLoc
 import { removeUserLocalUseCase } from "../../Domain/useCase/userLocal/removeUserLocal";
 
 export const userInitialState: User = {
-  id_user: "",
+  _id: "",
   full_name: "",
   numero: "",
   email: "",
   password: "",
   image: "",
-  session_token: "",
-  id_rol: "",
-  idCourse: '',
+ // session_token: "",
+  roles:[],
+  status:"",
+  token:""
 };
 
 export interface UserContextProps {
   user: User | null;
-  saveUserSession: (user: User) => Promise<void>;
+  saveUserSession: (user: User, token:any) => Promise<void>;
   getUserSession: () => Promise<void>;
   removeUserSession: () => Promise<void>;
 }
@@ -32,8 +33,8 @@ export const UserProvider = ({ children }: any) => {
     getUserSession();
   }, []);
 
-  const saveUserSession = async (user: User) => {
-    await saveUserLocalUseCase(user);
+  const saveUserSession = async (user: User, token:any) => {
+    await saveUserLocalUseCase(user, token);
     setUser(user);
   };
 

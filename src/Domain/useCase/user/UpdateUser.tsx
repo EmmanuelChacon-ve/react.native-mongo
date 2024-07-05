@@ -3,6 +3,6 @@ import { User } from "../../entities/User";
 
 const { update } = new UserRepositoryImpl();
 
-export const UpdateUserUseCase = async (user: User, userId: number) => {
-  return await update(user, userId);
+export const UpdateUserUseCase = async (full_name: string, numero: string,token:any) => {
+  return await update(full_name, numero, token);
 };

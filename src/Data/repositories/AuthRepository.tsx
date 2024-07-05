@@ -6,8 +6,6 @@ import { ResponseApi } from "../sources/remote/api/models/responseApi";
 import { ImagePickerAsset } from "expo-image-picker";
 import mime from "mime";
 
-
-
 export class AuthRepositoryImplement implements AuthRepository
 {  
     async registerWithImage(user: User, file: ImagePickerAsset): Promise<any> {
@@ -61,10 +59,11 @@ export class AuthRepositoryImplement implements AuthRepository
     async login(email: string, password: string): Promise<ResponseApi>
     {
         try {
-
-            const response = await ApiIngles.post<ResponseApi>('/auth/login',{email,password});
+            const response = await ApiIngles.post<ResponseApi>('/login/',{email,password});
+            console.log(response.data.token)
             return Promise.resolve(response.data)
         } catch (error) {
+            console.log(error)
             let e = (error as AxiosError)
             console.log(`Error: ${JSON.stringify(e.response?.data)}`);
             const apiError: ResponseApi = JSON.parse(JSON.stringify(e.response?.data));

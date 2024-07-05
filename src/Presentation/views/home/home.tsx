@@ -35,12 +35,15 @@ export const HomeScreen = ({ navigation, route }: Props) => {
     }
   }, [errorMessage]);
 
-  useEffect(() => {
-    if (user?.id_user && user?.session_token && user.id_user !== "") {
-      //TODO: Aqui colocar el nombre de la vista
-      const isTeacher = Number(user.id_rol) === 1? false : true;
-      navigation.replace("ClassesScreen",{isTeacher: isTeacher});
-      // navigation.replace('ProfileInfoScreens');
+ useEffect(() => {
+ if (user?._id) {
+  console.log((user.roles.at(0).role_id.name_rol) === "Admin")
+
+//TODO: Aqui colocar el nombre de la vista
+     const isTeacher = (user.roles.at(0).role_id.name_rol) === "Admin"? false : true;
+     // navigation.replace("ClassesScreen",{isTeacher: isTeacher});
+      navigation.replace("ProfileInfoScreenEdit")
+
     }
   }, [user]);
 

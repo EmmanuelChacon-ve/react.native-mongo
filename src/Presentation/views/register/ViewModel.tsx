@@ -8,30 +8,26 @@ import { useUserLocal } from "../../hooks/useUserLocal";
 import { Role } from "../../../Domain/entities/Role";
 import { RoleRepositoryImplement } from "../../../Data/repositories/RoleRepositoryImplement";
 import { GetRolesUseCase } from "../../../Domain/useCase/auth/GetRolesUseCase";
-import { GetAllProfessorsAuthUseCase } from "../../../Domain/useCase/professor/GetAllProfesors";
-import { Teacher } from "../../../Domain/entities/Teacher";
-import { Course } from "../../../Domain/entities/Course";
 import { ResponseApi } from "../../../Data/sources/remote/api/models/responseApi";
+import { User } from "../../../Domain/entities/User";
 
 const RegisterViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<User>({
     full_name: "",
     email: "",
     numero: "",
     password: "",
     image: "",
-    confirmPassword: "",
-    id_rol: "", // Agregar id_rol al estado
+    roles: [],  // Array de objetos Role
+    status: ""
   });
+  const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para el valor seleccionado
 
-  const [loadingElement, setloadingElement] = useState(false);
+  const [loadingElement, setLoadingElement] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
   const { user, getUserSession } = useUserLocal();
   const [roles, setRoles] = useState<Role[]>([]);
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [actualTeacher, setActualTeacher] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -41,54 +37,13 @@ const RegisterViewModel = () => {
         const roles = await getRolesUseCase.execute();
         setRoles(roles);
       } catch (error) {
-        console.error("Error fetching roles:", error);
+        console.error(":( Error fetching roles:", error);
+        setErrorMessage("Error fetching roles. Please try again later.");
       }
     };
+
     fetchRoles();
   }, []);
-
-  const getCourseInfo = (coursesOfTheProfessor: any[]): any => {
-    const courseInfo = [];
-    for (let course of coursesOfTheProfessor) {
-      const actCourse = {
-        id_course: course.id_course,
-        id_teacher: course.id_teacher,
-        id_name_course: course.course.name_course,
-      };
-      courseInfo.push(actCourse);
-    }
-    return courseInfo;
-  };
-
-  const getAllProfessors = async (): Promise<void> => {
-    try {
-      const response = await GetAllProfessorsAuthUseCase();
-      if (response.success && Array.isArray(response.data)) {
-        const teachers = response.data
-          .filter((teacher: Teacher) => teacher.courses && teacher.courses.length > 0)
-          .map((teacher: Teacher): Teacher => ({
-            id_teacher: teacher.id_teacher,
-            id_user: teacher.id_user,
-            full_name: teacher.full_name,
-            courses: getCourseInfo(teacher.courses),
-          }));
-          setTeachers(teachers)
-      } else {
-        console.error("Error: La respuesta de la API no es válida");
-      }
-    } catch (error) {
-      console.error("Error al obtener los profesores:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (Number(values.id_rol) === 1) {
-      getAllProfessors();
-    } else {
-      setTeachers([]);
-      setCourses([]);
-    }
-  }, [values.id_rol]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -122,50 +77,62 @@ const RegisterViewModel = () => {
     setValues({ ...values, [property]: value });
   };
 
+  const handleRoleChange = (itemValue: string | null) => {
+    const selectedRole = roles.find(role => role._id === itemValue);
+    if (selectedRole) {
+      setValues({ ...values, roles: [selectedRole] });
+      setSelectedRole(itemValue); // Actualizar el estado de la vista
+    }
+  };
+
   const register = async () => {
     if (isValidForm()) {
-      setloadingElement(true);
-      const apiResponse = await RegisterWithImageUseCase(values, file!);
-      setloadingElement(false);
-      if (apiResponse.success) {
-        console.log("Aqui la respuesta de la api", apiResponse.data);
-        await saveUserLocalUseCase(apiResponse.data);
-        getUserSession();
-      } else {
-        setErrorMessage(JSON.stringify(apiResponse.respuesta));
+      setLoadingElement(true);
+      try {
+        console.log('Si llega');
+        const apiResponse = await RegisterWithImageUseCase(values, file!);
+        setLoadingElement(false);
+        if (apiResponse.success) {
+          console.log("API response", apiResponse.data);
+          await saveUserLocalUseCase(apiResponse.data);
+          getUserSession();
+        } else {
+          setErrorMessage(JSON.stringify(apiResponse.respuesta));
+        }
+      } catch (error) {
+        setLoadingElement(false);
+        setErrorMessage("Error during registration");
+        console.error("Error during registration:", error);
       }
     }
   };
 
   const isValidForm = (): boolean => {
+    if (values.roles.length === 0) {
+      setErrorMessage("Select a role");
+      return false;
+    }
     if (!values.full_name) {
-      setErrorMessage("Fullname can't be empty");
-      return false;
-    }
-    if (isNaN(Number(values.numero)) || !values.numero) {
-      setErrorMessage("Please enter a valid Number");
-      return false;
-    }
-    if (!values.password || !values.confirmPassword) {
-      setErrorMessage("Password can't be empty");
-      return false;
-    }
-    if (values.password !== values.confirmPassword) {
-      setErrorMessage("The passwords are not equal");
+      setErrorMessage("Full name can't be empty");
       return false;
     }
     if (!values.email) {
-      setErrorMessage("email can't be empty");
+      setErrorMessage("Email can't be empty");
+      return false;
+    }
+    if (isNaN(Number(values.numero)) || !values.numero || values.numero.length < 11) {
+      setErrorMessage("Please enter a valid number");
+      return false;
+    }
+    if (!values.password) {
+      setErrorMessage("Password can't be empty");
       return false;
     }
     if (!values.image) {
-      setErrorMessage("Selecciona una imagen");
+      setErrorMessage("Select an image");
       return false;
     }
-    if (!values.id_rol) {
-      setErrorMessage("Selecciona un rol");
-      return false;
-    }
+    console.log('Si pasa las validaciones');
     return true;
   };
 
@@ -173,17 +140,14 @@ const RegisterViewModel = () => {
     ...values,
     roles,
     onChange,
+    handleRoleChange,
     register,
     errorMessage,
     pickImage,
     takePhoto,
     user,
-    teachers,
-    setCourses,
     loadingElement,
-    courses,
-    actualTeacher,
-    setActualTeacher,
+    selectedRole,  // Devolver el estado de selectedRole
   };
 };
 

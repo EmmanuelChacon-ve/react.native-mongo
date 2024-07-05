@@ -56,7 +56,9 @@ const UpdateProfileViewModel = () => {
   };
 
   const register = async () => {
-    if (isValidForm() && user && user.id_user) {
+    console.log("Actualizando");
+    
+    if (isValidForm() && user && user._id) {
       // Asegúrate de que user.id_user tenga un valor definido
       setLoadingElement(true);
       const updatedUser: User = {
@@ -64,17 +66,21 @@ const UpdateProfileViewModel = () => {
         ...values,
       };
       const apiResponse = await UpdateUserUseCase(
-        updatedUser,
-        parseInt(user.id_user, 10)
-      ); // Parsea user.id_user a number
+        values.full_name, values.numero, user.token
+      );
+      
       setLoadingElement(false);
       if (apiResponse.success) {
         console.log("Actualización exitosa", apiResponse.data);
         /* await saveUserLocalUseCase(apiResponse.data);
         getUserSession(); */
-        saveUserSession(apiResponse.data);
+        console.log(apiResponse)
+        saveUserSession(apiResponse.data, apiResponse.token);
+        return false
+      
       } else {
         setErrorMessage(JSON.stringify(apiResponse.message));
+        return apiResponse.message
       }
     }
   };

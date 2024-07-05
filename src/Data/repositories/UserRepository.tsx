@@ -5,11 +5,13 @@ import { ApiIngles } from "../apiIngles";
 import { ResponseApi } from "../sources/remote/api/models/responseApi";
 
 export class UserRepositoryImpl implements UserRepository {
-  async update(user: User, userId: number): Promise<ResponseApi> {
+  async update(full_name: string, numero: string, token:any): Promise<ResponseApi> {
     try {
       const response = await ApiIngles.put<ResponseApi>(
-        `/updateUser/${userId}`,
-        user
+        `/update`,
+        {
+          full_name, numero, token
+        }
       );
       return Promise.resolve(response.data);
     } catch (error) {
