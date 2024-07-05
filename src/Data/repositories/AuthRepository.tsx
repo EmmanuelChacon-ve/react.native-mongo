@@ -60,6 +60,7 @@ export class AuthRepositoryImplement implements AuthRepository
     {
         try {
             const response = await ApiIngles.post<ResponseApi>('/login/',{email,password});
+            console.log(response.data.token)
             return Promise.resolve(response.data)
         } catch (error) {
             console.log(error)

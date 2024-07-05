@@ -12,7 +12,7 @@ import { faVideo } from '@fortawesome/free-solid-svg-icons/faVideo';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { useUserLocal } from '../hooks/useUserLocal';
 import { VideoClassRepositoryImpl } from '../../Data/repositories/videosRepository';
-import { Video } from '../../Domain/entities/Video';
+//import { Video } from '../../Domain/entities/Video';
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../App'; 
@@ -22,51 +22,51 @@ const videoRepository = new VideoClassRepositoryImpl();
 export default function Menu({ selected = "first" }: { selected: "first" | "second" | "third" }) {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { getUserSession, user } = useUserLocal();
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true); // Estado de carga
+ // const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(false); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Estado de error
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        await getUserSession();
-        const videosResponse = await videoRepository.getVideosLocal();
-        console.log('Videos fetched:', videosResponse); // Añadido para depuración
-        if (videosResponse.success) {
-          setVideos(videosResponse.data);
-        } else {
-          setError('No videos available');
-        }
-      } catch (err) {
-        setError('Error loading videos');
-      } finally {
-        setLoading(false); // Finaliza el estado de carga
-      }
-    };
+  // useEffect(() => {
+  //   const fetchVideos = async () => {
+  //     try {
+  //       await getUserSession();
+  //       const videosResponse = await videoRepository.getVideosLocal();
+  //       console.log('Videos fetched:', videosResponse); // Añadido para depuración
+  //       if (videosResponse.success) {
+  //         setVideos(videosResponse.data);
+  //       } else {
+  //         setError('No videos available');
+  //       }
+  //     } catch (err) {
+  //       setError('Error loading videos');
+  //     } finally {
+  //       setLoading(false); // Finaliza el estado de carga
+  //     }
+  //   };
 
-    fetchVideos();
-  }, []);
+  //   fetchVideos();
+  // }, []);
 
   // Muestra la lista de clases si es profesor o es estudiante
   const onClassesPressed = () => {
     // Verifica el rol del usuario
-    const isTeacher = Number(user?.id_rol) === 2;
+    const isTeacher =  (user?.roles.at(0).role_id.name_rol) === "Admin" ;
     navigation.navigate("ClassesScreen", { isTeacher });
   }
 
-  const onVideoPressed = () => {
-    if (videos.length > 0) {
-      const videoAVer = videos[0];
-      console.log('Navigating with video:', videoAVer); // Añadido para depuración
-      navigation.navigate("VideoClassScreen", {
-        videTitle: videoAVer.titulo,
-        videoDescription: videoAVer.detail_video,
-        videoDuration: videoAVer.duration_video
-      });
-    } else {
-      console.log('No videos available');
-    }
-  }
+  // const onVideoPressed = () => {
+  //   if (videos.length > 0) {
+  //     const videoAVer = videos[0];
+  //     console.log('Navigating with video:', videoAVer); // Añadido para depuración
+  //     navigation.navigate("VideoClassScreen", {
+  //       videTitle: videoAVer.titulo,
+  //       videoDescription: videoAVer.detail_video,
+  //       videoDuration: videoAVer.duration_video
+  //     });
+  //   } else {
+  //     console.log('No videos available');
+  //   }
+  // }
 
   const onProfilePressed = () => {
     navigation.navigate("ProfileInfoScreenEdit");
@@ -94,9 +94,9 @@ export default function Menu({ selected = "first" }: { selected: "first" | "seco
         <FontAwesomeIcon icon={faHome} color={selected === "first" ? '#fff' : "#999"} size={30} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={onVideoPressed} disabled={videos.length === 0}>
+      {/* <TouchableOpacity onPress={onVideoPressed} disabled={videos.length === 0}>
         <FontAwesomeIcon icon={faVideo} color={selected === "second" ? '#fff' : "#999"} size={30} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={onProfilePressed}>
         <FontAwesomeIcon icon={faUser} color={selected === "third" ? '#fff' : "#999"} size={30} />

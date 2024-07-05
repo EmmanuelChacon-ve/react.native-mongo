@@ -19,9 +19,10 @@ const RegisterViewModel = () => {
     numero: "",
     password: "",
     image: "",
-    roles: [],
+    roles: [],  // Array de objetos Role
     status: ""
   });
+  const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para el valor seleccionado
 
   const [loadingElement, setLoadingElement] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
@@ -43,7 +44,6 @@ const RegisterViewModel = () => {
 
     fetchRoles();
   }, []);
-  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -77,10 +77,19 @@ const RegisterViewModel = () => {
     setValues({ ...values, [property]: value });
   };
 
+  const handleRoleChange = (itemValue: string | null) => {
+    const selectedRole = roles.find(role => role._id === itemValue);
+    if (selectedRole) {
+      setValues({ ...values, roles: [selectedRole] });
+      setSelectedRole(itemValue); // Actualizar el estado de la vista
+    }
+  };
+
   const register = async () => {
     if (isValidForm()) {
       setLoadingElement(true);
       try {
+        console.log('Si llega');
         const apiResponse = await RegisterWithImageUseCase(values, file!);
         setLoadingElement(false);
         if (apiResponse.success) {
@@ -99,11 +108,19 @@ const RegisterViewModel = () => {
   };
 
   const isValidForm = (): boolean => {
+    if (values.roles.length === 0) {
+      setErrorMessage("Select a role");
+      return false;
+    }
     if (!values.full_name) {
       setErrorMessage("Full name can't be empty");
       return false;
     }
-    if (isNaN(Number(values.numero)) || !values.numero) {
+    if (!values.email) {
+      setErrorMessage("Email can't be empty");
+      return false;
+    }
+    if (isNaN(Number(values.numero)) || !values.numero || values.numero.length < 11) {
       setErrorMessage("Please enter a valid number");
       return false;
     }
@@ -111,18 +128,11 @@ const RegisterViewModel = () => {
       setErrorMessage("Password can't be empty");
       return false;
     }
-    if (!values.email) {
-      setErrorMessage("Email can't be empty");
-      return false;
-    }
     if (!values.image) {
       setErrorMessage("Select an image");
       return false;
     }
-    if (!values.roles || values.roles.length === 0) {
-      setErrorMessage("Select a role");
-      return false;
-    }
+    console.log('Si pasa las validaciones');
     return true;
   };
 
@@ -130,12 +140,14 @@ const RegisterViewModel = () => {
     ...values,
     roles,
     onChange,
+    handleRoleChange,
     register,
     errorMessage,
     pickImage,
     takePhoto,
     user,
     loadingElement,
+    selectedRole,  // Devolver el estado de selectedRole
   };
 };
 

@@ -9,6 +9,7 @@ export interface User {
   image: string;
   status: string;
   roles: any[];
+  token:any;
 }
 
 

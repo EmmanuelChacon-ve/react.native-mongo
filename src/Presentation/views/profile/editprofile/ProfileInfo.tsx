@@ -8,12 +8,13 @@ import { RoundedButton } from "../../../components/RoundedButton";
 import { RootStackParamList } from "../../../../../App";
 import Layout from "../../../components/Layout";
 
+
 export const ProfileInfoScreenEdit = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { user, removeUserSession } = useViewModel();
+  const { user, removeUserSession, urlImage } = useViewModel();
 
   useEffect(() => {
-    if (user?.id_user === "") {
+    if (user?._id === "") {
       navigation.navigate("HomeScreen");
     }
   }, [user]);
@@ -47,7 +48,8 @@ export const ProfileInfoScreenEdit = () => {
 
         <View style={styles.logoContainer}>
           {user?.image !== "" && (
-            <Image source={{ uri: user?.image }} style={styles.logoImage} />
+            
+            <Image source={{ uri: urlImage }} style={styles.logoImage} />
           )}
         </View>
 

@@ -1,12 +1,13 @@
 import { userLocalInformation } from "../../Domain/repositories/userLocalRepository";
 import { localStorage } from "../sources/local/localStorage";
-import { User } from "../../Domain/entities/User";
+import { User } from '../../Domain/entities/User';
 import { ApiIngles } from "../apiIngles";
 import { AxiosError } from "axios";
 
 export class UserLocalRepositoryImpl implements userLocalInformation {
-  async saveUserInformation(user: User): Promise<void> {
+  async saveUserInformation(user: User, token:any ): Promise<void> {
     const { save } = localStorage();
+   user.token=token;
     await save("user", JSON.stringify(user));
   }
 

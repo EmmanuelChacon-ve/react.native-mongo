@@ -46,6 +46,7 @@ export const HomeScreen = ({ navigation, route }: Props) => {
 
     }
   }, [user]);
+
   return (
     <View style={styles.container}>
       <Image

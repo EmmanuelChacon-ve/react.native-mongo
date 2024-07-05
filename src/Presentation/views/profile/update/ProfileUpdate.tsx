@@ -36,18 +36,21 @@ export default function UpdateProfileScreen({ navigation, route }: Props) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    if (errorMessage) {
-      ToastAndroid.show(errorMessage, ToastAndroid.LONG);
-    }
-  }, [errorMessage]);
+  // useEffect(() => {
+  //   if (errorMessage) {
+  //     ToastAndroid.show(errorMessage, ToastAndroid.LONG);
+  //   }
+  // }, [errorMessage]);
 
   useEffect(() => {
     onChangeInfoUpdate(user?.full_name ?? "", user?.numero ?? "");
   }, [user]);
 
   const handleUpdate = async () => {
-    await register();
+    const error = await register();
+    if (error) {
+      ToastAndroid.show(error, ToastAndroid.LONG);
+    }
     navigation.navigate("ProfileInfoScreenEdit"); // Redirige al usuario después de la actualización
   };
 
