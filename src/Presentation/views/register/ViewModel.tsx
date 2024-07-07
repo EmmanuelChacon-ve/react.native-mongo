@@ -19,10 +19,10 @@ const RegisterViewModel = () => {
     numero: "",
     password: "",
     image: "",
-    roles: [],  // Array de objetos Role
-    status: ""
+    roles: [],
+    //status: "",
   });
-  const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para el valor seleccionado
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   const [loadingElement, setLoadingElement] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
@@ -77,11 +77,12 @@ const RegisterViewModel = () => {
     setValues({ ...values, [property]: value });
   };
 
-  const handleRoleChange = (itemValue: string | null) => {
-    const selectedRole = roles.find(role => role._id === itemValue);
-    if (selectedRole) {
-      setValues({ ...values, roles: [selectedRole] });
-      setSelectedRole(itemValue); // Actualizar el estado de la vista
+  const handleRoleChange = (roleId: string | null) => {
+    if (roleId) {
+      const selectedRole = roles.find((role) => role._id === roleId);
+      if (selectedRole) {
+        onChange("roles", [{ role_name: selectedRole.name_rol }]);
+      }
     }
   };
 
@@ -89,15 +90,17 @@ const RegisterViewModel = () => {
     if (isValidForm()) {
       setLoadingElement(true);
       try {
-        console.log('Si llega');
+        console.log("Si pasa las validaciones");
+        //console.log("User values being sent to backend:", values);
         const apiResponse = await RegisterWithImageUseCase(values, file!);
         setLoadingElement(false);
-        if (apiResponse.success) {
+        if (apiResponse && apiResponse.success) {
           console.log("API response", apiResponse.data);
           await saveUserLocalUseCase(apiResponse.data);
           getUserSession();
         } else {
-          setErrorMessage(JSON.stringify(apiResponse.respuesta));
+          setErrorMessage("Error during registration");
+          console.error("API Error:", apiResponse);
         }
       } catch (error) {
         setLoadingElement(false);
@@ -108,10 +111,10 @@ const RegisterViewModel = () => {
   };
 
   const isValidForm = (): boolean => {
-    if (values.roles.length === 0) {
+/*     if (values.roles.length === 0) {
       setErrorMessage("Select a role");
       return false;
-    }
+    } */
     if (!values.full_name) {
       setErrorMessage("Full name can't be empty");
       return false;
@@ -132,7 +135,7 @@ const RegisterViewModel = () => {
       setErrorMessage("Select an image");
       return false;
     }
-    console.log('Si pasa las validaciones');
+    console.log("Si pasa las validaciones");
     return true;
   };
 
@@ -147,7 +150,7 @@ const RegisterViewModel = () => {
     takePhoto,
     user,
     loadingElement,
-    selectedRole,  // Devolver el estado de selectedRole
+    selectedRole,
   };
 };
 
