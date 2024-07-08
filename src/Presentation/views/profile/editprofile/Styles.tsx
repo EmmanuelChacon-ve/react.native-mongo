@@ -2,24 +2,24 @@ import { StyleSheet } from "react-native";
 
 const ProfileInfoStyles = StyleSheet.create({
   container: {
-    flex: 0.9,
+    flex: 1,
     backgroundColor: "black",
   },
   imageBackground: {
     width: "100%",
     height: "100%",
     opacity: 0.6,
-    bottom: "30%",
+    position: "absolute",
   },
   form: {
     width: "100%",
-    height: "55%",
+    height: "65%",
     backgroundColor: "white",
-    position: "absolute",
-    bottom: 0,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     padding: 30,
+    position: "absolute",
+    bottom: 0,
   },
   formText: {
     fontWeight: "bold",
@@ -41,9 +41,8 @@ const ProfileInfoStyles = StyleSheet.create({
     color: "gray",
   },
   logoContainer: {
-    position: "absolute",
     alignSelf: "center",
-    top: "11%",
+    marginTop: 30,
   },
   logoImage: {
     width: 150,
@@ -52,18 +51,10 @@ const ProfileInfoStyles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 2,
   },
-  logoText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 20,
-    marginTop: 10,
-    fontWeight: "bold",
-  },
   logout: {
     position: "absolute",
-    alignSelf: "center",
-    top: 30,
     right: 15,
+    top: 15,
   },
   logoutImage: {
     width: 40,
@@ -71,9 +62,16 @@ const ProfileInfoStyles = StyleSheet.create({
   },
   change: {
     position: "absolute",
-    alignSelf: "center",
-    top: 75,
     right: 15,
+    top: 75,
+  },
+  pdfContainer: {
+    flex: 1,
+    width: "100%",
+    marginTop: 20,
+  },
+  pdfView: {
+    flex: 1,
   },
 });
 

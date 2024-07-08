@@ -11,7 +11,7 @@ import EditRole from "./src/Presentation/views/permissions/editRole/EditRole";
 import { MenuProvider } from "react-native-popup-menu";
 import { ProfileUserScreens } from "./src/Presentation/views/profile/info/profileInfo";
 import RoleScreen from "./src/Presentation/views/roles/Roles";
-import { ProfileInfoScreenEdit } from "./src/Presentation/views/profile/editprofile/ProfileInfo";
+import ProfileInfoScreenEdit from "./src/Presentation/views/profile/editprofile/ProfileInfo";
 import UpdateProfileScreen from "./src/Presentation/views/profile/update/ProfileUpdate";
 import { UserProvider } from "./src/Presentation/context/UserContext";
 
@@ -21,7 +21,11 @@ export type RootStackParamList = {
   RegisterScreen: undefined;
   ClassesScreen: { isTeacher: boolean };
   ProfileInfoScreens: undefined;
-  VideoClassScreen: {videTitle:string,videoDescription:string,videoDuration:string};
+  VideoClassScreen: {
+    videTitle: string;
+    videoDescription: string;
+    videoDuration: string;
+  };
   RoleScreen: undefined;
   ProfileInfoScreenEdit: undefined;
   CreateClass: undefined;

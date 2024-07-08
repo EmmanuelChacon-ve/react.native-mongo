@@ -5,15 +5,17 @@ import { ApiIngles } from "../apiIngles";
 import { ResponseApi } from "../sources/remote/api/models/responseApi";
 
 export class UserRepositoryImpl implements UserRepository {
-
-  async update(full_name: string, numero: string, token:any): Promise<ResponseApi> {
+  async update(
+    full_name: string,
+    numero: string,
+    token: any
+  ): Promise<ResponseApi> {
     try {
-      const response = await ApiIngles.put<ResponseApi>(
-       ` /update`,
-        {
-          full_name, numero, token
-        }
-      );
+      const response = await ApiIngles.put<ResponseApi>(`/update`, {
+        full_name,
+        numero,
+        token,
+      });
       return Promise.resolve(response.data);
     } catch (error) {
       let e = error as AxiosError;
@@ -24,40 +26,35 @@ export class UserRepositoryImpl implements UserRepository {
       return Promise.resolve(apiError);
     }
   }
- async getAllUser (): Promise<ResponseApi>  {
-try {
-    const response = await ApiIngles.get<ResponseApi> ( "/user")
-    return Promise.resolve(response.data)
-  
-} catch (error) {
-    let e = error as AxiosError;
-    console.log("ERROR: " + JSON.stringify(e.response?.data));
-    const apiError: ResponseApi = JSON.parse(
-    JSON.stringify(e.response?.data)
-  );
-    return Promise.resolve(apiError);
-
-}    
- }
-
-
- async deleteUser (id: String,token: String): Promise<ResponseApi>
- {
+  async getAllUser(): Promise<ResponseApi> {
     try {
-    const response = await ApiIngles.delete(`/delete/${id}`,
-      {
-        data: {token: token}
-      });
-    return Promise.resolve(response.data);
+      const response = await ApiIngles.get<ResponseApi>("/user");
+      return Promise.resolve(response.data);
     } catch (error) {
       let e = error as AxiosError;
       console.log("ERROR: " + JSON.stringify(e.response?.data));
       const apiError: ResponseApi = JSON.parse(
-      JSON.stringify(e.response?.data)
-    );
+        JSON.stringify(e.response?.data)
+      );
       return Promise.resolve(apiError);
     }
- }
+  }
+
+  async deleteUser(id: String, token: String): Promise<ResponseApi> {
+    try {
+      const response = await ApiIngles.delete(`/delete/${id}`, {
+        data: { token: token },
+      });
+      return Promise.resolve(response.data);
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR: " + JSON.stringify(e.response?.data));
+      const apiError: ResponseApi = JSON.parse(
+        JSON.stringify(e.response?.data)
+      );
+      return Promise.resolve(apiError);
+    }
+  }
 }
 
 /*   async updateWithImage(
