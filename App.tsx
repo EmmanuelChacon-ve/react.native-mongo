@@ -14,10 +14,12 @@ import RoleScreen from "./src/Presentation/views/roles/Roles";
 import { ProfileInfoScreenEdit } from "./src/Presentation/views/profile/editprofile/ProfileInfo";
 import UpdateProfileScreen from "./src/Presentation/views/profile/update/ProfileUpdate";
 import { UserProvider } from "./src/Presentation/context/UserContext";
+import ListUsers from "./src/Presentation/views/ListUsers.tsx/ListUsers";
 
 export type RootStackParamList = {
   //aqui definimos que tipos de datos van a recibir esas pantallas
   HomeScreen: undefined;
+  ListUsers: undefined;
   RegisterScreen: undefined;
   ClassesScreen: { isTeacher: boolean };
   ProfileInfoScreens: undefined;
@@ -48,6 +50,7 @@ const App = () => {
               headerShown: false,
             }}
           >
+            <Stack.Screen name="ListUsers" component={ListUsers} />
             {/* LLAMADO AL LOGIN */}
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             {/* LLAMADO AL REGISTER */}

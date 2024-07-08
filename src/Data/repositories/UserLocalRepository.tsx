@@ -23,7 +23,7 @@ export class UserLocalRepositoryImpl implements userLocalInformation {
 
   async getUser(): Promise<User[]> {
     try {
-      const response = await ApiIngles.get<User[]>("/usersget");
+      const response = await ApiIngles.get<User[]>("/user");
       return Promise.resolve(response.data);
     } catch (error) {
       let e = error as AxiosError;
