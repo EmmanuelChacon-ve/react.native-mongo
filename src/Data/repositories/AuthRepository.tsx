@@ -11,10 +11,23 @@ export class AuthRepositoryImplement implements AuthRepository
     async registerWithImage(user: User, file: ImagePickerAsset): Promise<any> {
         try {
             const data = new FormData();
-            data.append('image',JSON.stringify(file));
-            data.append('user', JSON.stringify(user));
+            //data.append('image',JSON.stringify(file));
+            //data.append('user', JSON.stringify(user));
+            
 
-            const response = await ApiInglesForImage.post<ResponseApi>('/auth/registerWithImage', data, {
+            const rol = user.roles.at(0).role_name;
+
+            data.append('image',JSON.stringify(file));
+            data.append('full_name', user.full_name);
+            data.append('email', user.email);
+            data.append('numero', user.numero);
+            data.append('password', user.password);
+            //data.append('status', 'A');
+            data.append('role_name',rol);
+
+            console.log(JSON.stringify(data));
+
+            const response = await ApiInglesForImage.post<ResponseApi>('/register', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -46,7 +59,7 @@ export class AuthRepositoryImplement implements AuthRepository
     {
         try {
 
-            const response = await ApiIngles.post<ResponseApi>('/auth/register',user);
+            const response = await ApiIngles.post<ResponseApi>('/register',user);
             return Promise.resolve(response.data)
         } catch (error) {
             let e = (error as AxiosError)

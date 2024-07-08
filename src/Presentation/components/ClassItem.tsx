@@ -8,10 +8,13 @@ import { ClassProps } from './ClassList'
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu'
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../App';
-
+import {deleteUserUseCase} from "../../Domain/useCase/user/UpdateUser";
+import {useUserLocal} from "../hooks/useUserLocal"
 import { MyColors } from '../theme/AppTheme'
 
 export default function ClassItem({ classItem, isTeacher = false }: { classItem: ClassProps, isTeacher?: boolean }) {
+  const { getUserSession, user } = useUserLocal();
+  if(user?._id === classItem.id) return null;
  const navigation = useNavigation<NavigationProp<RootStackParamList>>();  // Tipar correctamente el hook useNavigation
   //TODO: Aqui es la vista de yurimar
   const handlePlayPress = () => {
@@ -31,7 +34,9 @@ export default function ClassItem({ classItem, isTeacher = false }: { classItem:
         </MenuTrigger>
         <MenuOptions customStyles={menuStyles}>
           <MenuOption value={1} text='Editar' onSelect={() => {}} /> 
-          <MenuOption value={2} text='Eliminar' onSelect={() => {}} /> 
+          <MenuOption value={2} text='Eliminar' onSelect={async () => {
+            const response = deleteUserUseCase(classItem.id,user?.token)
+            }} /> 
         </MenuOptions>
       </Menu>
       <Text style={styles.listId}>
@@ -48,11 +53,11 @@ export default function ClassItem({ classItem, isTeacher = false }: { classItem:
           />
         </View>
         <Text style={{ color: classItem.viewed ? MyColors.secondaryClasses : MyColors.tertiaryClasses }}>
-          { classItem.duration } mins
+          { classItem.duration }
         </Text>
       </View>
       <TouchableOpacity onPress={handlePlayPress}>
-        <Image source={require("../../../assets/play.png")} />
+        {/* <Image source={require("../../../assets/play.png")} /> */}
       </TouchableOpacity>
     </View>
   )
@@ -94,9 +99,9 @@ const styles = StyleSheet.create({
   },
   
   listId: {
-    fontSize: 25,
+    fontSize: 0,
     width: "10%",
-    color: "#B8B8D2"
+    color: "#B8B8D2",
   },
   
   listDetailsContainer: {
